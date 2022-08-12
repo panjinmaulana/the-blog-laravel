@@ -10,7 +10,8 @@ class PostController extends Controller
     public function index() {
         return view('posts', [
             'title' => 'Posts',
-            'posts' => Post::all(), // manggil model class yang bernama Post, karena method all() itu static jadi pakai keyword '::'
+            // 'posts' => Post::all(), manggil model class yang bernama Post, karena method all() itu static jadi pakai keyword '::'
+            'posts' => Post::latest()->get(), // u/ menampilkan data yang terbaru
         ]);
     }
 

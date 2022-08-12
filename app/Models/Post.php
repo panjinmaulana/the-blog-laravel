@@ -31,8 +31,8 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function user() {
+    public function author() {
         // 1 post hanya memiliki 1 user
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id'); // user_id u/ menambahkan alias pada class User, karena kita membutuhkan method author bukan user
     }
 }
