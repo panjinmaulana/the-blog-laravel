@@ -36,4 +36,8 @@ Route::get('/posts', [PostController::class, 'index']);
 // memanggil class PostController yang mempunyai method show
 // halaman single post
 // {slug} mengambil apapun yang ada di dalamnya. u/ bisa digunakan (diolah) kembali
-Route::get('/posts/{slug}', [PostController::class, 'show']);
+
+// keyword ':slug' berarti akan mencari slugnya itu sendiri, karena default dari slug itu id
+// dan ketika pakai seperti itu di controller tidak perlu ada logic find slug, jadi cukup di route nya saja
+// karena sudah memakan route model binding
+Route::get('/posts/{post:slug}', [PostController::class, 'show']);

@@ -2,52 +2,24 @@
 
 namespace App\Models;
 
-// php artisan tinker pada terminal u/ mengisi data ke database menggunakan orm eloquent
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-// ketika pake elogquent ORM, ketika ingin mengakses data dari db-nya otomatis data tersebut menjadi collect()
-// sehingga kita bisa langsung menggunakan function sakti laravelnya tanpa keyword collect() terlebih dahulu
-
-class Post
+class Post extends Model
 {
-    private static $blog_posts = [
-        [
-            'title' => 'Judul Post Pertama',
-            'slug' => 'judul-post-pertama',
-            'author' => 'Panji Maulana',
-            'body' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates veniam impedit quidem labore distinctio cumque cum illo odit eos officia, repellendus quos, excepturi eum laboriosam natus, nulla beatae! Possimus mollitia ipsum deserunt ratione? Nostrum iste veritatis voluptas autem accusamus, assumenda, rerum quos cupiditate, quasi excepturi iure consectetur incidunt dolor possimus adipisci rem nemo. Repellat natus quam dolores optio impedit quas autem fugit labore? Et consequuntur repudiandae ratione nulla, neque fugit ea omnis error exercitationem quam repellendus. Laborum maiores sint minima.'
-        ],
-        [
-            'title' => 'Judul Post Kedua',
-            'slug' => 'judul-post-kedua',
-            'author' => 'Mila Nur Fadilah',
-            'body' => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam ea, tempore beatae repudiandae ab placeat fugit molestiae vero praesentium accusantium asperiores? Explicabo non porro debitis accusantium ipsum fugit numquam, earum quisquam cumque veritatis perferendis ad corrupti officia nemo fugiat blanditiis magnam necessitatibus commodi iure, tempora hic quas nesciunt sequi atque? Ipsam rem magnam facere, voluptatibus impedit mollitia ipsum! Sit sunt obcaecati sint perspiciatis aperiam exercitationem eos deleniti dolore delectus magni accusamus, molestias laudantium quaerat sed nulla eveniet quibusdam eius possimus!'
-        ],
-    ];
+    use HasFactory;
 
-    public static function all()
-    {
-        // karena modifier $blog_posts adalah private jadi kita harus menggunakan keyword 'self', '::' (static) u/ mengaksesnya, jika modifier biasa public/protected kita bisa menggunakan $this->blog_posts.
+    
+    // mass assignment
+    // bisa digunakan di create & update
+    // example keyword di tinker
+    // Post::create([
+    //     'title' => 'Judul Ketiga',
+    //     'slug' => 'judul-ketiga',
+    //     'excerpt' => 'Lorem ipsum ketiga',
+    //     'body' => '<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa consequatur at, quae excepturi quo similique cumque dolorum! Fugiat necessitatibus rerum eos delectus officiis, molestias id dolorem numquam deleniti fuga eum quis et quo iste odit perspiciatis repellat ex similique quas quisquam molestiae sapiente. Molestias ipsa aperiam quae excepturi ratione!</p><p>Necessitatibus placeat illo doloremque nulla soluta perspiciatis at minus, voluptatem quidem reiciendis in veritatis laudantium ipsum atque velit unde consequuntur deserunt rem molestiae. Ipsum labore et culpa, porro mollitia tempore, consequatur iusto ullam voluptate consectetur, quasi beatae quis earum dolore molestias expedita consequuntur tenetur!</p><p>Maiores modi aut alias corrupti odio autem facilis, veritatis blanditiis ea dolorem soluta asperiores dolores nam hic quis in esse iste minus totam distinctio et. Perferendis possimus consectetur quo delectus? Ad vel at non laborum? Ab doloribus error veritatis minima ratione culpa, magni optio consectetur sequi similique dolore quo officiis eos inventore ex dolorem excepturi praesentium. Possimus at beatae consequuntur voluptatibus quisquam architecto autem velit et quidem temporibus natus repellendus, voluptas debitis. Assumenda maxime, commodi illo maiores distinctio totam magni dolorum doloribus qui saepe eveniet suscipit repellat neque tenetur repellendus quae dolorem reprehenderit! Rerum mollitia laudantium, ducimus provident nobis optio commodi voluptatem error non fugiat neque iusto?</p>'
+    // ]);
 
-        // collect() adalah method dari laravel u/ merubah array menjadi array yang lebih sakti karena dapat diakses oleh function yang dibikin oleh si laravelnya. ex: filter(), map(), first(), firstWhere()
-
-        return collect(self::$blog_posts); 
-    }
-
-    public static function find($slug)
-    {
-        // self khusus u/ property static
-        // static u/ memanggil method static di dalam class
-        $posts = static::all();
-
-        // $post = [];
-        // foreach($posts as $p) {
-        //     if ($p['slug'] == $slug) {
-        //         $post = $p;
-        //     };
-        // };
-
-        // firstWhere() bisa menggantikan logic diatas hanya dengan menyimpan array ke collect() terlebih dahulu, lalu gunakan method laravelnya seperti firstWhere().
-
-        return $posts->firstWhere('slug', $slug);
-    }
+    // protected $fillable = ['title', 'excerpt', 'body']; supaya dapat ngasih tau ke laravelnya field mana aja yang boleh diisi
+    protected $guarded = ['id']; // supaya dapat ngasih tau ke laravelnya field mana aja yang tidak boleh diisi kebalikan dari $fillable (kecuali $fillable)
 }
