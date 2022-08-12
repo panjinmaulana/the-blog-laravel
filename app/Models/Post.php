@@ -27,7 +27,12 @@ class Post extends Model
     // jika kita ingin menhubungkan relationship, nama method harus sama dengan nama modelnya
     public function category()
     {
-        // post hanya memilik 1 category
+        // 1 post hanya memilik 1 category
         return $this->belongsTo(Category::class);
+    }
+
+    public function user() {
+        // 1 post hanya memiliki 1 user
+        return $this->belongsTo(User::class);
     }
 }
