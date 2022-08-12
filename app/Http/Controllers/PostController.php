@@ -9,9 +9,13 @@ class PostController extends Controller
 {
     public function index() {
         return view('posts', [
-            'title' => 'Posts',
+            'title' => 'All Posts',
             // 'posts' => Post::all(), manggil model class yang bernama Post, karena method all() itu static jadi pakai keyword '::'
-            'posts' => Post::latest()->get(), // u/ menampilkan data yang terbaru
+            // keyword with() u/ menangani lazy loading karena itu merupakan default dari eloquent
+            // jika pakai with() berarti memakai eager loading, jadi query nya dipanggil semuanya di awal u/ menghindari N+1 problem
+            // normalnya ex: with('author'), jika single query
+            // multiples pakai [] (array)
+            'posts' => Post::with(['author', 'category'])->latest()->get(), // u/ menampilkan data yang terbaru
         ]);
     }
 
