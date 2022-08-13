@@ -9,6 +9,50 @@ class Post extends Model
 {
     use HasFactory;
 
+    // query scope, sebuah function u/ menangani query yang familiar yang disediakan oleh eloquent orm
+    // di depannya harus ada keyword scope
+    public function scopeFilter($query, array $filters) // $filters adalah sebuah array
+    {
+        // cek isi array $fillter ada key search atau tidak
+        // if (isset($filters['search']) ? $filters['search'] : false) {
+        //     $query->where('title', 'like', '%' . $filters['search'] . '%')
+        //           ->orWhere('body', 'like', '%' . $filters['search'] . '%');
+        // SELECT * FROM posts WHERE title LIKE %search% or WHERE body LIKE %search%;
+        // }
+
+        // menggunakan method when() dari laravel u/ menggantikan syntax pengkondisian ex: if else
+        // menggunakan null coalescing operator php (??)
+        // $query as $query
+        // $search as $filters['search']
+
+        $query->when($filters['search'] ?? false, function($query, $search) {
+            return $query->where(function($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('body', 'like', '%' . $search . '%');
+             });
+         });
+
+        // setelah di cari kita pengen juga yang yang category-nya spesifik yang di url ex: web-programming
+        // maka pakai method whereHas
+        // use ($category) supaya dapat dikenali di closure function setelahnya (di callback)
+        $query->when($filters['category'] ?? false, function($query, $category) {
+            return $query->whereHas('category', function($query) use ($category) {
+                $query->where('slug', $category);
+            });
+        });
+
+        $query->when($filters['author'] ?? false, function($query, $author) {
+            return $query->whereHas('author', function($query) use ($author) {
+                $query->where('username', $author);
+            });
+        });
+
+        // function ini untuk mencari title /& body dan category / author
+        // ex:
+        // ../posts?category=web-programming&search=dolorum
+        // ../posts?author=mansur.lukita&search=dolorum
+    }
+
     // mass assignment
     // bisa digunakan di create & update
     // example keyword di tinker
@@ -27,12 +71,14 @@ class Post extends Model
     protected $with = ['category', 'author'];
 
     // jika kita ingin menhubungkan relationship, nama method harus sama dengan nama modelnya
+    // relationship table
     public function category()
     {
         // 1 post hanya memilik 1 category
         return $this->belongsTo(Category::class);
     }
 
+    // relationship table
     public function author() {
         // 1 post hanya memiliki 1 user
         return $this->belongsTo(User::class, 'user_id'); // user_id u/ menambahkan alias pada class User, karena kita membutuhkan method author bukan user
