@@ -9,7 +9,6 @@ class Post extends Model
 {
     use HasFactory;
 
-    
     // mass assignment
     // bisa digunakan di create & update
     // example keyword di tinker
@@ -23,6 +22,9 @@ class Post extends Model
 
     // protected $fillable = ['title', 'excerpt', 'body']; supaya dapat ngasih tau ke laravelnya field mana aja yang boleh diisi
     protected $guarded = ['id']; // supaya dapat ngasih tau ke laravelnya field mana aja yang tidak boleh diisi kebalikan dari $fillable (kecuali $fillable)
+
+    // sehingga setiap pemanggilan dari query postnya category sama authornya ke bawa
+    protected $with = ['category', 'author'];
 
     // jika kita ingin menhubungkan relationship, nama method harus sama dengan nama modelnya
     public function category()
