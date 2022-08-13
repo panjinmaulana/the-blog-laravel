@@ -4,14 +4,24 @@
     <div class="row justify-content-center">
         <div class="col-lg-4">
             <main class="form-login">
+
+                {{-- flash message --}}
+                {{-- cek apakah ada session yang sukses, maka tampilkan alertnya --}}
+                @if(session()->has('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <h1 class="h3 mb-3 fw-normal text-center">Please login</h1>
                 <form>
                     <div class="form-floating">
-                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                        <input type="email" class="form-control rounded-top" id="email" name="email" placeholder="name@example.com" required autofocus autocomplete="off">
                         <label for="email">Email address</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                        <input type="password" class="form-control rounded-bottom" id="password" name="password" placeholder="Password" required autocomplete="off">
                         <label for="password">Password</label>
                     </div>
                     <button class="w-100 btn btn-lg btn-primary mt-3" type="submit">Login</button>
