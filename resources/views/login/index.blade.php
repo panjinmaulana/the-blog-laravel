@@ -6,7 +6,7 @@
             <main class="form-login">
 
                 {{-- flash message --}}
-                {{-- cek apakah ada session yang sukses, maka tampilkan alertnya --}}
+                {{-- cek apakah ada session yang sukses (ketika dia success), maka tampilkan alertnya --}}
                 @if(session()->has('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -14,11 +14,25 @@
                     </div>
                 @endif
 
+                {{-- ketika login failed --}}
+                @if(session()->has('loginError'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('loginError') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <h1 class="h3 mb-3 fw-normal text-center">Please login</h1>
-                <form>
+                <form action="/login" method="post">
+                    @csrf
                     <div class="form-floating">
-                        <input type="email" class="form-control rounded-top" id="email" name="email" placeholder="name@example.com" required autofocus autocomplete="off">
+                        <input type="email" class="form-control rounded-top @error('email') is-invalid @enderror" id="email" name="email" placeholder="name@example.com" value="{{ old('email') }}" required autofocus autocomplete="off">
                         <label for="email">Email address</label>
+                        @error('email')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                     <div class="form-floating">
                         <input type="password" class="form-control rounded-bottom" id="password" name="password" placeholder="Password" required autocomplete="off">

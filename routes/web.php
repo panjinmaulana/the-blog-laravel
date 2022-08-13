@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 use App\Models\Category;
@@ -80,7 +81,11 @@ Route::get('/categories', function() {
 //     ]);
 // });
 
-Route::get('/login', [LoginController::class, 'index']);
+Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest'); // name() merupakan Named Routes jadi routenya bisa kita kasih nama karena default Named Routes ketika user belum login untuk masuk ke URL tertentu bakalan di redirect ke yang nama route nya login yang ada di folder app/Htpp/Middleware/Authenticate.php method redirectTo(), middleware u/ mengauthentifikasi bahwa yang boleh masuk kesini hanya user yang belum login ('guest')
+Route::post('/login', [LoginController::class, 'authenticate']);
+Route::post('/logout', [LoginController::class, 'logout']);
 
-Route::get('/register', [RegisterController::class, 'index']);
+Route::get('/register', [RegisterController::class, 'index'])->middleware('guest');
 Route::post('/register', [RegisterController::class, 'store']);
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
