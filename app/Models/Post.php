@@ -83,4 +83,10 @@ class Post extends Model
         // 1 post hanya memiliki 1 user
         return $this->belongsTo(User::class, 'user_id'); // user_id u/ menambahkan alias pada class User, karena kita membutuhkan method author bukan user
     }
+
+    // dengan menggunakan method ini dan adapun yang kita isi slug di returnnya, otomatis kita akan menggunakan slug dalam mencari detailnya bukan id
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }
