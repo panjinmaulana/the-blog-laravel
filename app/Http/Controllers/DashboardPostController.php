@@ -52,12 +52,21 @@ class DashboardPostController extends Controller
      */
     public function store(Request $request) // untuk mengambil data dari yang diinputkan user (create data)
     {
+        // ddd() u/ var_dump, die dan ngedebug
+
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'slug' => 'required|unique:posts', // unique dari table posts
             'category_id' => 'required',
+            'image' => 'image|file|max:1024', // max 1 mb
             'body' => 'required',
         ]);
+
+        // cek apakah image di upload
+        if ($request->file('image')) {
+            // maka file image (dari name form di inputnya) simpan di store yang foldernya bernama post-images
+            $validatedData['image'] = $request->file('image')->store('post-images');
+        }
 
         $validatedData['user_id'] = auth()->user()->id;
         $validatedData['excerpt'] = Str::limit(strip_tags($request->body, 200)); //strip_tags() u/ menghilangkan tags2 html, Str::limit() u/ text truncate, pada Str::limit() jika parameter yang ketiga ga diisi maka defaultnya adalah '...'
