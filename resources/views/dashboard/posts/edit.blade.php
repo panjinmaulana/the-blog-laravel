@@ -7,7 +7,7 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <form method="post" action="/dashboard/posts/{{ $post->slug }}" class="mb-3"> {{-- ketika methodnya post dari main urlnya maka bakalan menuju method store di controllernya--}}
+            <form method="post" action="/dashboard/posts/{{ $post->slug }}" class="mb-3" enctype="multipart/form-data"> {{-- ketika methodnya post dari main urlnya maka bakalan menuju method store di controllernya--}}
                 @method('put')
                 @csrf
                 <div class="mb-3">
@@ -40,6 +40,28 @@
                         @endforeach
                     </select>
                 </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">Post Image</label>
+
+                    {{-- tampilan img lama dalam posisi hidden untuk ngetrigger mendapatkan data dapa method update agar img yang lama dapat dihapus --}}
+                    <input type="hidden" name="oldImage" value="{{ $post->image }}">
+
+                    @if ($post->image)
+                        <img src="{{ asset('storage/' . $post->image) }}" alt="Preview Image" class="img-preview img-fluid mb-3 col-sm-5 d-block">
+                    @else
+                        <img alt="Preview Image" class="img-preview img-fluid mb-3 col-sm-5">
+                    @endif
+
+                    <input class="form-control @error('image') is-invalid @enderror" type="file" id="image" name="image" onchange="previewImage()">
+                    
+                    @error('image')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
                 <div class="mb-3">
                     <label for="body" class="form-label">Body</label>
                     @error('body')
@@ -56,6 +78,7 @@
     </div>
 
     <script>
+        // trix editor
         const title = document.querySelector('#title');
         const slug = document.querySelector('#slug');
 
@@ -68,5 +91,20 @@
         document.addEventListener('trix-file-accept', function(e) {
             e.preventDefault();
         });
+
+        // preview image
+        function previewImage() {
+            const image = document.querySelector('#image');
+            const imgPreview = document.querySelector('.img-preview');
+
+            imgPreview.style.display = 'block';
+
+            const oFReader = new FileReader();
+            oFReader.readAsDataURL(image.files[0]);
+
+            oFReader.onload = function(oFREvent) {
+                imgPreview.src = oFREvent.target.result;
+            }
+        }
     </script>
 @endsection

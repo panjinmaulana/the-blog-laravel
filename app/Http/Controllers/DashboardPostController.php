@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Post;
 use App\Models\Category;
@@ -126,14 +127,34 @@ class DashboardPostController extends Controller
         $rules = [
             'title' => 'required|max:255',
             'category_id' => 'required',
+            'image' => 'image|file|max:1024', // max 1 mb
             'body' => 'required',
         ];
+
+        // cek apakah image di upload
+        if ($request->file('image')) {
+            // maka file image (dari name form di inputnya) simpan di store yang foldernya bernama post-images
+            $validatedData['image'] = $request->file('image')->store('post-images');
+        }
 
         if ($request->slug != $post->slug) {
             $rules['slug'] = 'required|unique:posts';
         }
 
+        // cek apakah image di upload
+        
         $validatedData = $request->validate($rules);
+        
+        if ($request->file('image')) {
+            // cek ada img lama atau tidak
+            if ($request->oldImage) {
+                // untuk menghapus img pada storage
+                Storage::delete($request->oldImage);
+            }
+
+            // maka file image (dari name form di inputnya) simpan di store yang foldernya bernama post-images
+            $validatedData['image'] = $request->file('image')->store('post-images');
+        }
 
         $validatedData['user_id'] = auth()->user()->id;
         $validatedData['excerpt'] = Str::limit(strip_tags($request->body, 200)); //strip_tags() u/ menghilangkan tags2 html, Str::limit() u/ text truncate, pada Str::limit() jika parameter yang ketiga ga diisi maka defaultnya adalah '...'
@@ -153,6 +174,12 @@ class DashboardPostController extends Controller
      */
     public function destroy(Post $post)
     {
+        // cek ada img lama atau tidak
+        if ($post->image) {
+            // untuk menghapus img pada storage
+            Storage::delete($post->image);
+        }
+
         Post::destroy($post->id);
         return redirect('/dashboard/posts')->with('success', 'Post has been deleted!');
     }
