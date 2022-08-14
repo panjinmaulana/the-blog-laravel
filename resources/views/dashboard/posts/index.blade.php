@@ -5,7 +5,14 @@
         <h1 class="h2">My Posts</h1>
     </div>
 
-    <div class="table-responsive col-lg-9">
+    @if(session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <div class="table-responsive col-lg-8">
         <a href="/dashboard/posts/create" class="btn btn-primary mb-3">Create new post</a> {{-- href="/dashboard/posts/create" create disini otomatis nanti bakalan di tangkap sama method create(), karena kita menggunakan resource controller --}}
         <table class="table table-striped table-sm">
             <thead>

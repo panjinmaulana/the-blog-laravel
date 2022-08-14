@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 use App\Models\Post;
 use App\Models\Category;
@@ -51,7 +52,20 @@ class DashboardPostController extends Controller
      */
     public function store(Request $request) // untuk mengambil data dari yang diinputkan user (create data)
     {
-        return $request;
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'slug' => 'required|unique:posts', // unique dari table posts
+            'category_id' => 'required',
+            'body' => 'required',
+        ]);
+
+        $validatedData['user_id'] = auth()->user()->id;
+        $validatedData['excerpt'] = Str::limit(strip_tags($request->body, 200)); //strip_tags() u/ menghilangkan tags2 html, Str::limit() u/ text truncate, pada Str::limit() jika parameter yang ketiga ga diisi maka defaultnya adalah '...'
+
+        // create ke db
+        Post::create($validatedData);
+
+        return redirect('/dashboard/posts')->with('success', 'New post has been added!');
     }
 
     /**

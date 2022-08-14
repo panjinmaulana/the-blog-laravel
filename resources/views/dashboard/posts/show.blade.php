@@ -17,8 +17,6 @@
                     {{-- tanda {!!  !!}, supaya laravelnya dapat menjalankan tag html --}}
                     {!! $post->body !!}
                 </article>
-
-                <a href="/posts" class="d-block mt-3">Back to posts</a>
             </div>
         </div>
     </div>
