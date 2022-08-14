@@ -6,7 +6,7 @@
     </div>
 
     @if(session()->has('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show col-lg-8" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -31,8 +31,16 @@
                         <td>{{ $post->category->name }}</td>
                         <td>
                             <a href="/dashboard/posts/{{ $post->slug }}" class="badge bg-info"><span data-feather="eye" class="align-text-bottom"></span></a> {{-- ini bakalan menuju ke method show() --}}
-                            <a href="" class="badge bg-warning"><span data-feather="edit" class="align-text-bottom"></span></a>
-                            <a href="" class="badge bg-danger"><span data-feather="x-circle" class="align-text-bottom"></span></a>
+
+                            {{-- /edit menandakan route resource nya update() --}}
+                            {{-- cek route resource: php artisan route:list --}}
+                            <a href="/dashboard/posts/{{ $post->slug }}/edit" class="badge bg-warning"><span data-feather="edit" class="align-text-bottom"></span></a>
+
+                            <form action="/dashboard/posts/{{ $post->slug }}" method="post" class="d-inline">
+                                @method('delete') {{-- methodnya ganti jadi delete, karena kalo dari form hanya bisa get dan post --}}
+                                @csrf
+                                <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle" class="align-text-bottom"></span></button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach

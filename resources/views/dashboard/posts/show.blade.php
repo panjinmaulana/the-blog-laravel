@@ -7,9 +7,15 @@
             <div class="col-lg-8">
                 <h1 class="mb-3">{{ $post->title }}</h1>
 
-                <a href="/dashboard/posts" class="btn btn-success"><span data-feather="arrow-left" style="margin-top: -2px"></span> Back to all my posts</a>
-                <a href="" class="btn btn-warning"><span data-feather="edit" style="margin-top: -3px"></span> Edit</a>
-                <a href="" class="btn btn-danger"><span data-feather="x-circle" style="margin-top: -2px"></span> Delete</a>
+                <a href="/dashboard/posts" class="btn btn-success"><span data-feather="arrow-left"></span> Back to all my posts</a>
+                
+                <a href="/dashboard/posts/{{ $post->slug }}/edit" class="btn btn-warning"><span data-feather="edit"></span> Edit</a>
+
+                <form action="/dashboard/posts/{{ $post->slug }}" method="post" class="d-inline">
+                    @method('delete') {{-- methodnya ganti jadi delete, karena kalo dari form hanya bisa get dan post --}}
+                    @csrf
+                    <button class="btn btn-danger" onclick="return confirm('Are you sure?')"><span data-feather="x-circle" class="align-text-bottom"></span> Delete</button>
+                </form>
 
                 <img src="https://source.unsplash.com/1200x400?{{ $post->category->name }}" class="img-fluid mt-3" alt="{{ $post->category->name }}">
 

@@ -76,6 +76,11 @@ class DashboardPostController extends Controller
      */
     public function show(Post $post)
     {
+        // agar kita tidak bisa melihat dan mengubah post buatan author lain via URL
+        if($post->author->id !== auth()->user()->id) {
+            abort(403);
+        }
+
         return view('dashboard.posts.show', [
             'post' => $post,
         ]);
@@ -87,9 +92,17 @@ class DashboardPostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
+    public function edit(Post $post) // model route binding, ini untuk update untuk ngambil datanya
     {
-        //
+        // agar kita tidak bisa melihat dan mengubah post buatan author lain via URL
+        if($post->author->id !== auth()->user()->id) {
+            abort(403);
+        }
+
+        return view('dashboard.posts.edit', [
+            'post' => $post,
+            'categories' => Category::all(),
+        ]);
     }
 
     /**
@@ -99,9 +112,28 @@ class DashboardPostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, Post $post) // ini untuk update datanya ke db, $request data baru inputan dari user, $post data lama dari db
     {
-        //
+        $rules = [
+            'title' => 'required|max:255',
+            'category_id' => 'required',
+            'body' => 'required',
+        ];
+
+        if ($request->slug != $post->slug) {
+            $rules['slug'] = 'required|unique:posts';
+        }
+
+        $validatedData = $request->validate($rules);
+
+        $validatedData['user_id'] = auth()->user()->id;
+        $validatedData['excerpt'] = Str::limit(strip_tags($request->body, 200)); //strip_tags() u/ menghilangkan tags2 html, Str::limit() u/ text truncate, pada Str::limit() jika parameter yang ketiga ga diisi maka defaultnya adalah '...'
+
+        // update data ke db
+        Post::where('id', $post->id)
+                ->update($validatedData);
+
+        return redirect('/dashboard/posts')->with('success', 'Post has been updated!');
     }
 
     /**
@@ -112,7 +144,8 @@ class DashboardPostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        Post::destroy($post->id);
+        return redirect('/dashboard/posts')->with('success', 'Post has been deleted!');
     }
 
     public function checkSlug(Request $request) // $request ngambil dari URL, disini yang bernama title
