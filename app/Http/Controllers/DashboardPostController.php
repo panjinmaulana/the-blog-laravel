@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
 use Illuminate\Http\Request;
+
+use App\Models\Post;
+use App\Models\Category;
+use \Cviebrock\EloquentSluggable\Services\SlugService;
 
 // CRUD
 // controller ini normalnya (awalnya) disediakan oleh laravelnya
@@ -35,7 +38,9 @@ class DashboardPostController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.posts.create', [
+            'categories' => Category::all(),
+        ]);
     }
 
     /**
@@ -44,9 +49,9 @@ class DashboardPostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request) // untuk mengambil data dari yang diinputkan user (create data)
     {
-        //
+        return $request;
     }
 
     /**
@@ -94,5 +99,12 @@ class DashboardPostController extends Controller
     public function destroy(Post $post)
     {
         //
+    }
+
+    public function checkSlug(Request $request) // $request ngambil dari URL, disini yang bernama title
+    {
+        $slug = SlugService::createSlug(Post::class, 'slug', $request->title);
+        // kembali kan dengan json array assoc
+        return response()->json(['slug' => $slug]);
     }
 }

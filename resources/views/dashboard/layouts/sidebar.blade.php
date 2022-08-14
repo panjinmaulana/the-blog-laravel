@@ -9,7 +9,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('dashboard/posts') ? 'active' : '' }}" href="/dashboard/posts">
+                {{-- tanda '*' itu adalah sebuah wildcard, supaya dari setelahnya tetap akan dibaca --}}
+                <a class="nav-link {{ Request::is('dashboard/posts*') ? 'active' : '' }}" href="/dashboard/posts">
                     <span data-feather="file-text" class="align-text-bottom"></span>
                     My Posts
                 </a>
