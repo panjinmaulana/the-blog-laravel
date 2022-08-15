@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\DashboardPostController;
+use App\Http\Controllers\AdminCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,4 +95,23 @@ Route::get('/dashboard', function() {
 
 Route::get('/dashboard/posts/checkSlug', [DashboardPostController::class, 'checkSlug'])->middleware('auth');
 // ini merupakan route resource CRUD (resource controller)
-Route::resource('/dashboard/posts', DashboardPostController::class)->middleware('auth'); 
+Route::resource('/dashboard/posts', DashboardPostController::class)->middleware('auth');
+
+// admin category
+// method show gabakalan dipake, maka pake method except(nama_methodnya)
+// route ini terdapat middleware manual ('admin') ->middleware('admin')
+// jgn lupa didaftarkan nama middleware nya di app/Http/Kernel.php
+
+// middlewarenya untuk menghandle authorization routenya
+// sedangkan gate untuk menghandle blade authorization (ui/fe)
+Route::resource('/dashboard/categories', AdminCategoryController::class)->except('show')->middleware('admin');
+
+// cek route list
+// command terminal: php artisan route:list
+// method index => u/ menampilkan semua category (table category)
+// store => u/ penambahan proses category baru
+// create => u/ nampilin form category
+// show => u/ nampilin detail category
+// update => u/ proses update category
+// destroy => u/ proses menghapus category
+// edit => u/ menampilkan form edit category
